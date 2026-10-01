@@ -74,9 +74,9 @@ export function PlaceWall({ places, openId, onOpen }: Props) {
   );
 }
 
-type DetailProps = { place: Place; rect: Rect; onClose: () => void; onStep: (dir: -1 | 1) => void };
+type DetailProps = { place: Place; rect: Rect; onClose: () => void; onStep: (dir: -1 | 1) => void; single?: boolean };
 
-export function PlaceDetail({ place, rect, onClose, onStep }: DetailProps) {
+export function PlaceDetail({ place, rect, onClose, onStep, single }: DetailProps) {
   const [out, setOut] = useState(false);
   const [vp] = useState({ w: window.innerWidth, h: window.innerHeight });
 
@@ -158,12 +158,16 @@ export function PlaceDetail({ place, rect, onClose, onStep }: DetailProps) {
           </p>
         )}
         <div className="mt-8 flex flex-wrap gap-2 font-mono text-[11px] uppercase tracking-[0.14em]">
+          {!single && (
+            <>
           <button className="rounded-full border border-border px-4 py-2 hover:bg-card" onClick={() => onStep(-1)}>
             ← Previous
           </button>
           <button className="rounded-full border border-border px-4 py-2 hover:bg-card" onClick={() => onStep(1)}>
             Next →
           </button>
+            </>
+          )}
           <button className="rounded-full bg-foreground px-4 py-2 text-background hover:bg-foreground/85" onClick={retract}>
             Pin it back
           </button>

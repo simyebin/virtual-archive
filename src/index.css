@@ -45,7 +45,9 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  font-synthesis: none; /* keep Korean upright inside italic Latin text */
+  font-synthesis: none;
+  word-break: keep-all; /* 한글은 단어 단위로 줄바꿈 */
+  overflow-wrap: anywhere; /* keep Korean upright inside italic Latin text */
 }
 
 @utility grain {

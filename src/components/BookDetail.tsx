@@ -10,6 +10,7 @@ type Props = {
   rect: Rect;
   onClose: () => void;
   onStep: (dir: -1 | 1) => void;
+  single?: boolean;
 };
 
 const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
@@ -24,7 +25,7 @@ function useViewport() {
   return vp;
 }
 
-export function BookDetail({ book: raw, rect, onClose, onStep }: Props) {
+export function BookDetail({ book: raw, rect, onClose, onStep, single }: Props) {
   const book = useSampledBook(raw);
   const vp = useViewport();
   const [out, setOut] = useState(false);
@@ -109,7 +110,7 @@ export function BookDetail({ book: raw, rect, onClose, onStep }: Props) {
       </div>
 
       <section
-        className={`absolute overflow-y-auto ${narrow ? "inset-x-0 bottom-0 max-h-[50vh] px-6 pb-8" : "right-[8vw] top-1/2 w-[min(38vw,460px)] -translate-y-1/2"}`}
+        className={`absolute overflow-y-auto ${narrow ? "inset-x-0 bottom-0 max-h-[50vh] px-6 pb-8" : "right-[8vw] top-1/2 max-h-[86vh] w-[min(38vw,460px)] py-4"}`}
         style={{
           opacity: out ? 1 : 0,
           transform: `${narrow ? "" : "translateY(-50%)"} translateY(${out ? 0 : 16}px)`,
@@ -117,19 +118,31 @@ export function BookDetail({ book: raw, rect, onClose, onStep }: Props) {
         }}
       >
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-          {book.recommender ? `Recommended by ${book.recommender}` : `Finished ${book.finished}`}
+          {book.recommender ? `Recommended by ${book.recommender}` : book.finished ? `Finished ${book.finished}` : "Read"}
         </p>
         <h2 className="mt-3 font-display text-[clamp(32px,4vw,52px)] font-light leading-[1.02]">{book.title}</h2>
         <p className="mt-2 font-display text-xl italic text-muted-foreground">
           {book.author} · {book.year}
         </p>
-        <p className="mt-6 max-w-prose text-[15px] leading-relaxed text-foreground/85">{book.blurb}</p>
+        {book.note ? (
+          <>
+            <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.18em] text-primary">My note</p>
+            <p className="mt-2 max-w-prose font-hand text-[16px] leading-[1.75] text-foreground/90">{book.note}</p>
+            <p className="mt-5 max-w-prose border-l border-foreground/15 pl-3 text-[13px] leading-relaxed text-muted-foreground">
+              {book.blurb}
+            </p>
+          </>
+        ) : (
+          <p className="mt-6 max-w-prose text-[15px] leading-relaxed text-foreground/85">{book.blurb}</p>
+        )}
         <p className="mt-6 font-mono text-[12px] uppercase tracking-[0.14em] text-primary">
           {book.rating ? (
             <span aria-label={`${book.rating} / 5`}>
               {"★".repeat(book.rating)}
               <span className="text-foreground/20">{"★".repeat(5 - book.rating)}</span>
             </span>
+          ) : book.bookmarks ? (
+            `Bookmarks × ${book.bookmarks}`
           ) : (
             "Unrated"
           )}
@@ -138,12 +151,16 @@ export function BookDetail({ book: raw, rect, onClose, onStep }: Props) {
           </span>
         </p>
         <div className="mt-8 flex flex-wrap gap-2 font-mono text-[11px] uppercase tracking-[0.14em]">
+          {!single && (
+            <>
           <button className="rounded-full border border-border px-4 py-2 hover:bg-card" onClick={() => onStep(-1)}>
             ← Previous
           </button>
           <button className="rounded-full border border-border px-4 py-2 hover:bg-card" onClick={() => onStep(1)}>
             Next →
           </button>
+            </>
+          )}
           <button
             className="rounded-full bg-foreground px-4 py-2 text-background hover:bg-foreground/85"
             onClick={retract}

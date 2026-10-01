@@ -69,10 +69,10 @@ export default function App() {
             style={{ animationDelay: "400ms" }}
           >
             <a href="#books" className="hover:text-foreground">
-              <span className="text-foreground">{books.length}</span> volumes
+              <span className="text-foreground">{books.length}</span> {books.length === 1 ? "volume" : "volumes"}
             </a>
             <a href="#spaces" className="hover:text-foreground">
-              <span className="text-foreground">{places.length}</span> spaces
+              <span className="text-foreground">{places.length}</span> {places.length === 1 ? "space" : "spaces"}
             </a>
           </nav>
         </header>
@@ -135,6 +135,7 @@ export default function App() {
           rect={openBook.rect}
           onClose={() => setOpenBook(null)}
           onStep={stepBook}
+          single={bookList.length < 2}
         />
       )}
       {openPlace && placeList[openPlace.i] && (
@@ -144,6 +145,7 @@ export default function App() {
           rect={openPlace.rect}
           onClose={() => setOpenPlace(null)}
           onStep={stepPlace}
+          single={placeList.length < 2}
         />
       )}
     </div>

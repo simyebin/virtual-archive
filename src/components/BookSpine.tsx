@@ -111,7 +111,13 @@ export function BookSpine({ book: raw, hidden, className = "", onOpen }: Props) 
               {book.year} · {book.binding}
             </p>
             <p className="mt-1 font-mono text-[11px] tracking-[0.12em] text-primary">
-              {book.rating ? "★".repeat(book.rating) : <span className="uppercase text-muted-foreground">Unrated</span>}
+              {book.rating ? (
+                "★".repeat(book.rating)
+              ) : book.bookmarks ? (
+                <span className="uppercase">Bookmarks × {book.bookmarks}</span>
+              ) : (
+                <span className="uppercase text-muted-foreground">Unrated</span>
+              )}
             </p>
             {book.genres && (
               <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-primary">

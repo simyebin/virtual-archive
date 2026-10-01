@@ -6,8 +6,10 @@ export type Book = {
   cover: string; // real cover art (Open Library URL)
   year: number;
   blurb: string;
+  note?: string; // my own words about the book
+  bookmarks?: number;
   rating: number; // 0 means unrated
-  finished: string; // e.g. "Jul 2026"
+  finished: string; // e.g. "Jul 2026", "" if unknown
   recommender?: string;
   publisher: string;
   binding: "hardcover" | "paperback" | "mass";
@@ -25,7 +27,7 @@ export type Book = {
   spineImage?: string;
 };
 
-// 샘플 서재. Goodreads CSV를 준비하면 이 배열을 통째로 다시 생성하면 돼요.
+// 내 서재. 책을 추가할 때는 seeds 배열에 한 권씩 넣으면 돼요.
 // (spine/band/ink는 기본값이고, 화면에서는 표지 왼쪽 가장자리 색을 다시 샘플링해 덮어씁니다.)
 type Seed = {
   isbn: string;
@@ -38,250 +40,34 @@ type Seed = {
   rating: number;
   finished: string;
   blurb: string;
+  note?: string; // 나의 감상
+  bookmarks?: number;
+  binding?: Book["binding"]; // 실제 제본을 알면 직접 지정
+  cover?: string; // public/ 기준 경로 또는 URL. 없으면 Open Library에서 ISBN으로 찾음
   spine: string;
   band: string;
 };
 
 const seeds: Seed[] = [
   {
-    isbn: "9780593135204",
-    title: "Project Hail Mary",
-    author: "Andy Weir",
-    genres: ["Sci-Fi"],
-    year: 2021,
-    pages: 496,
-    publisher: "Ballantine",
-    rating: 5,
-    finished: "Sep 2026",
-    blurb:
-      "A lone astronaut wakes up with no memory on a ship light-years from home, and slowly realises he is humanity's last chance — with an unlikely friend.",
-    spine: "#1d2a3a",
-    band: "#d9a441",
-  },
-  {
-    isbn: "9780062961372",
-    title: "Almond",
-    author: "Won-pyung Sohn",
-    genres: ["Fiction"],
-    year: 2017,
-    pages: 272,
-    publisher: "HarperVia",
-    rating: 4,
-    finished: "Aug 2026",
-    blurb:
-      "A boy born unable to feel emotions meets a troubled classmate, and the two change each other in ways neither expected.",
-    spine: "#e7dccb",
-    band: "#c2452f",
-  },
-  {
-    isbn: "9781455563937",
-    title: "Pachinko",
-    author: "Min Jin Lee",
-    genres: ["Fiction"],
-    year: 2017,
-    pages: 496,
-    publisher: "Grand Central",
-    rating: 5,
-    finished: "Jul 2026",
-    blurb:
-      "Four generations of a Korean family in Japan, bound by love, sacrifice and the quiet endurance of people history tried to overlook.",
-    spine: "#a83b2c",
-    band: "#e6c37a",
-  },
-  {
-    isbn: "9780593318171",
-    title: "Klara and the Sun",
-    author: "Kazuo Ishiguro",
-    genres: ["Fiction", "Sci-Fi"],
-    year: 2021,
-    pages: 303,
-    publisher: "Knopf",
-    rating: 4,
-    finished: "Jun 2026",
-    blurb:
-      "An Artificial Friend watches the world from a shop window and learns, slowly and luminously, what it means to love.",
-    spine: "#e0b23c",
-    band: "#2b2b2b",
-  },
-  {
-    isbn: "9781250301697",
-    title: "The Silent Patient",
-    author: "Alex Michaelides",
-    genres: ["Mystery & Thriller"],
-    year: 2019,
-    pages: 336,
-    publisher: "Celadon",
-    rating: 4,
-    finished: "May 2026",
-    blurb:
-      "A famous painter shoots her husband and never speaks another word. A psychotherapist becomes obsessed with making her talk.",
-    spine: "#203645",
-    band: "#b8c7cf",
-  },
-  {
-    isbn: "9780316556347",
-    title: "Circe",
-    author: "Madeline Miller",
-    genres: ["Fantasy"],
-    year: 2018,
-    pages: 393,
-    publisher: "Little, Brown",
-    rating: 5,
-    finished: "Apr 2026",
-    blurb:
-      "The witch of Aiaia tells her own story — exile, gods and monsters, and the slow forging of a self out of mortal courage.",
-    spine: "#c4612b",
-    band: "#1a1a1a",
-  },
-  {
-    isbn: "9780735211292",
-    title: "Atomic Habits",
-    author: "James Clear",
-    genres: ["Nonfiction"],
-    year: 2018,
-    pages: 320,
-    publisher: "Avery",
-    rating: 3,
-    finished: "Mar 2026",
-    blurb:
-      "Tiny changes, remarkable results: a practical framework for building good habits and breaking bad ones.",
-    spine: "#f2efe8",
-    band: "#d9a33a",
-  },
-  {
-    isbn: "9780062316097",
-    title: "Sapiens",
-    author: "Yuval Noah Harari",
-    genres: ["Nonfiction"],
-    year: 2011,
-    pages: 464,
-    publisher: "Harper",
-    rating: 4,
-    finished: "Feb 2026",
-    blurb:
-      "A brief history of humankind, from foragers to the scientific revolution — and the stories that let strangers cooperate.",
-    spine: "#ece6d8",
-    band: "#b23a2a",
-  },
-  {
-    isbn: "9780375704024",
-    title: "Norwegian Wood",
-    author: "Haruki Murakami",
-    genres: ["Fiction", "Romance"],
-    year: 1987,
-    pages: 296,
-    publisher: "Vintage",
-    rating: 4,
-    finished: "Jan 2026",
-    blurb:
-      "A Beatles song sends Toru back to Tokyo in the late sixties, to a love divided between two very different women.",
-    spine: "#2f4a2d",
-    band: "#d7c9a7",
-  },
-  {
-    isbn: "9780441172719",
-    title: "Dune",
-    author: "Frank Herbert",
-    genres: ["Sci-Fi"],
-    year: 1965,
-    pages: 617,
-    publisher: "Ace",
-    rating: 5,
-    finished: "Dec 2025",
-    blurb:
-      "On the desert planet Arrakis, a young heir is pulled into a war over the most precious substance in the universe.",
-    spine: "#b9752f",
-    band: "#3a2416",
-  },
-  {
-    isbn: "9780141439518",
-    title: "Pride and Prejudice",
-    author: "Jane Austen",
-    genres: ["Romance", "Fiction"],
-    year: 1813,
-    pages: 480,
-    publisher: "Penguin Classics",
-    rating: 5,
-    finished: "Nov 2025",
-    blurb:
-      "Elizabeth Bennet and Mr Darcy misjudge each other spectacularly in the wittiest courtship in English literature.",
-    spine: "#8c9c86",
-    band: "#e6d6b2",
-  },
-  {
-    isbn: "9780156012195",
-    title: "The Little Prince",
-    author: "Antoine de Saint-Exupéry",
-    genres: ["Fiction"],
-    year: 1943,
-    pages: 96,
-    publisher: "Harcourt",
-    rating: 5,
-    finished: "Oct 2025",
-    blurb:
-      "A pilot stranded in the desert meets a small prince from another planet. What is essential is invisible to the eye.",
-    spine: "#f1e9d2",
-    band: "#3b6aa0",
-  },
-  {
-    isbn: "9780547928227",
-    title: "The Hobbit",
-    author: "J.R.R. Tolkien",
-    genres: ["Fantasy"],
-    year: 1937,
-    pages: 300,
-    publisher: "Mariner",
-    rating: 4,
-    finished: "Sep 2025",
-    blurb:
-      "Bilbo Baggins is swept out of his comfortable hole and into an adventure with dwarves, a wizard and a dragon.",
-    spine: "#3f5a3b",
-    band: "#c9a44d",
-  },
-  {
-    isbn: "9780743273565",
-    title: "The Great Gatsby",
-    author: "F. Scott Fitzgerald",
-    genres: ["Fiction"],
-    year: 1925,
-    pages: 180,
-    publisher: "Scribner",
-    rating: 3,
-    finished: "Aug 2025",
-    blurb:
-      "Nick Carraway watches his mysterious neighbour chase a green light across the bay, and the Jazz Age glitter around him.",
-    spine: "#14213a",
-    band: "#e8b44c",
-  },
-  {
-    isbn: "9780451524935",
-    title: "1984",
-    author: "George Orwell",
-    genres: ["Fiction", "Sci-Fi"],
-    year: 1949,
-    pages: 328,
-    publisher: "Signet",
-    rating: 4,
-    finished: "Jul 2025",
-    blurb:
-      "Winston Smith rewrites history for the Party, until he begins, dangerously, to think for himself.",
-    spine: "#8a2a23",
-    band: "#efe7d6",
-  },
-  {
-    isbn: "9780767905923",
-    title: "Tuesdays with Morrie",
-    author: "Mitch Albom",
-    genres: ["Nonfiction"],
-    year: 1997,
-    pages: 192,
-    publisher: "Broadway",
+    isbn: "9791193383193",
+    title: "일의 감각",
+    author: "조수용",
+    genres: ["에세이", "일과 브랜딩"],
+    year: 2024,
+    pages: 263,
+    publisher: "REFERENCE BY B",
+    binding: "hardcover",
+    cover: "covers/work-and-sense.jpg",
     rating: 0,
-    finished: "Jun 2025",
+    finished: "",
+    bookmarks: 18,
     blurb:
-      "A sportswriter reconnects with his dying former professor for a final course, held every Tuesday, on how to live.",
-    spine: "#4c2215",
-    band: "#7e5741",
+      "좋은 감각을 지니려면, 디자인을 잘하려면, 더 나은 브랜드를 만들려면 어떻게 해야 하는가. ‘일’하는 사람의 섬세한 ‘감각’ 탐구, 조수용의 첫 단독 에세이.",
+    note:
+      "서촌으로 혼자 여행 갔다가 어떤 이유에서인지 마음이 갔다. 가벼이 골랐지만 결국 나는 아끼고 아끼는 책이 되었다. 나의 두근거림을 다시 일깨워준 책, 일을 할 때의 마음가짐부터 시작하여 스스로 어느 정도까지 양보해야 하는지 일침을 가하는 책이다. 아이러니하게도 감각을 알기 위해서 읽은 책이지만, 나는 일을 더 하고 싶다는 마음을 얻은 책이기도 하다. 유일하게 북마크가 18개나 된다.",
+    spine: "#cf8219",
+    band: "#d24b12",
   },
 ];
 
@@ -320,7 +106,8 @@ export function slug(s: string) {
 export const books: Book[] = seeds.map((s, i) => {
   const r = hash(s.isbn);
   const binding: Book["binding"] =
-    s.pages > 420 ? "hardcover" : s.pages < 260 ? "mass" : "paperback";
+    s.binding ??
+    (s.pages > 420 ? "hardcover" : s.pages < 260 ? "mass" : "paperback");
   const finish: Book["finish"] =
     binding === "hardcover" ? "cloth" : r() > 0.5 ? "gloss" : "matte";
   const height =
@@ -329,15 +116,21 @@ export const books: Book[] = seeds.map((s, i) => {
       : binding === "mass"
         ? 196 + r() * 14
         : 214 + r() * 16;
-  const width = Math.min(58, Math.max(16, s.pages * 0.08 + (r() - 0.5) * 6));
+  const width = Math.min(58, Math.max(26, s.pages * 0.08 + (r() - 0.5) * 6));
   return {
     id: `${slug(s.title)}-${i}`,
     title: s.title,
     author: s.author,
     genres: s.genres,
-    cover: `https://covers.openlibrary.org/b/isbn/${s.isbn}-L.jpg`,
+    cover: s.cover
+      ? s.cover.startsWith("http")
+        ? s.cover
+        : import.meta.env.BASE_URL + s.cover
+      : `https://covers.openlibrary.org/b/isbn/${s.isbn}-L.jpg`,
     year: s.year,
     blurb: s.blurb,
+    note: s.note,
+    bookmarks: s.bookmarks,
     rating: s.rating,
     finished: s.finished,
     publisher: s.publisher,
