@@ -146,7 +146,7 @@ export function PlaceDetail({ place, rect, onClose, onStep }: DetailProps) {
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
           {place.kind} · Visited {place.visited}
         </p>
-        <h2 className="mt-3 font-hand text-[clamp(30px,3.6vw,46px)] leading-[1.15]">{place.name}</h2>
+        <h2 className="mt-3 font-hand text-[clamp(30px,3.6vw,46px)] font-extralight leading-[1.15]">{place.name}</h2>
         <p className="mt-1 font-display text-xl italic text-muted-foreground">{place.city}</p>
         <p className="mt-6 font-hand text-[18px] leading-relaxed text-foreground/90">“{place.note}”</p>
         {place.story && <p className="mt-4 max-w-prose text-[15px] leading-relaxed text-foreground/75">{place.story}</p>}
