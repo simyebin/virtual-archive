@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "GITHUB_PAGES=true vite build && touch dist/.nojekyll && cd dist && git init -q -b gh-pages && git add -A && git commit -qm deploy && git push -qf https://github.com/simyebin/virtual-archive.git gh-pages && rm -rf .git"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
