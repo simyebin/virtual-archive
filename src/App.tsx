@@ -1,7 +1,8 @@
 import { useCallback, useState, type ReactNode } from "react";
 import { ArchiveFilter } from "./components/ArchiveFilter";
 import { BookDetail } from "./components/BookDetail";
-import { PlaceDetail, PlaceWall } from "./components/PlaceWall";
+import { PlaceDetail } from "./components/PlaceDetail";
+import { PlaceMap } from "./components/PlaceMap";
 import { Shelf, type Rect } from "./components/Shelf";
 import { TypedTitle } from "./components/TypedTitle";
 import { books, type Book } from "./data/books";
@@ -43,7 +44,7 @@ export default function App() {
       setOpenPlace((o) => {
         if (!o) return o;
         const i = (o.i + dir + placeList.length) % placeList.length;
-        return { i, rect: rectOf(`[aria-label="${placeList[i].name}, ${placeList[i].city}"]`, o.rect) };
+        return { i, rect: rectOf(`[data-place-id="${placeList[i].id}"] svg`, o.rect) };
       }),
     [placeList],
   );
@@ -101,7 +102,7 @@ export default function App() {
 
         <section id="spaces" className="scroll-mt-8 pb-32 pt-24">
           <div className="mx-auto flex max-w-[1200px] flex-col gap-6 px-6 sm:px-10">
-            <SectionLabel no="02" title="The Wall" sub="다녀온 멋진 공간들" />
+            <SectionLabel no="02" title="The Map" sub="다녀온 멋진 공간들" />
             <ArchiveFilter
               items={places}
               chipsOf={placeChips}
@@ -112,7 +113,7 @@ export default function App() {
           </div>
           {placeList.length ? (
             <div className="pt-8">
-              <PlaceWall
+              <PlaceMap
                 places={placeList}
                 openId={openPlace ? placeList[openPlace.i]?.id : null}
                 onOpen={(i, rect) => setOpenPlace({ i, rect })}
